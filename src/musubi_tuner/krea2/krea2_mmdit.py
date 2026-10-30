@@ -2,9 +2,9 @@
 
 Ported from references/Krea2/mmdit.py, plus musubi training hooks (gradient checkpointing,
 block swap) and the shared attention backend. The core attention now goes through
-musubi's common ``modules.attention`` (SDPA / flash / sageattn, selectable via attn_mode),
+musubi's common `modules.attention` (SDPA / flash / feather / sageattn, selectable via attn_mode),
 with the combined sequence ordered image-first so that valid tokens form a contiguous
-prefix per sample — this lets the shared varlen / cu_seqlens machinery handle text padding.
+prefix per sample - this lets the shared varlen / cu_seqlens machinery handle text padding.
 """
 
 import math
@@ -292,7 +292,7 @@ class SingleStreamDiT(nn.Module):
     def __init__(self, config: SingleMMDiTConfig, attn_mode: str = "torch", split_attn: bool = False):
         super().__init__()
         self.config = config
-        # Backend for the shared attention ("torch"=SDPA, "flash", "sageattn", "xformers").
+        # Backend for the shared attention ("torch"=SDPA, "flash", "feather", "sageattn", "xformers").
         self.attn_mode = attn_mode
         self.split_attn = split_attn
 

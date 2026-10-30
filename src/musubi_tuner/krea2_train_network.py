@@ -540,6 +540,12 @@ class Krea2NetworkTrainer(NetworkTrainer):
 
 def krea2_setup_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument(
+        "--feather_attn",
+        action="store_true",
+        help="use FeatherAttn for dense attention (AITER forward + fused FeatherAttn backward). "
+        "Masked/split/varlen cases fall back to AITER FlashAttention.",
+    )
+    parser.add_argument(
         "--fp8_scaled",
         action="store_true",
         help="use dynamic scaled fp8 for the DiT (requires --fp8_base). Quantizes per-block Linears at load time.",

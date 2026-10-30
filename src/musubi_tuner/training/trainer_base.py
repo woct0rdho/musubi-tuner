@@ -1653,7 +1653,9 @@ class NetworkTrainer:
         loading_device = "cpu" if blocks_to_swap > 0 else accelerator.device
 
         logger.info(f"Loading DiT model from {args.dit}")
-        if args.sdpa:
+        if getattr(args, "feather_attn", False):
+            attn_mode = "feather"
+        elif args.sdpa:
             attn_mode = "torch"
         elif args.flash_attn:
             attn_mode = "flash"

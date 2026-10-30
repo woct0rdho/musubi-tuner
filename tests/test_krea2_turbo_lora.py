@@ -67,6 +67,19 @@ def _handle_args(args):
     Krea2NetworkTrainer().handle_model_specific_args(args)
 
 
+def test_parser_has_feather_attn_flag():
+    import argparse
+
+    from musubi_tuner.krea2_train_network import krea2_setup_parser
+
+    parser = argparse.ArgumentParser()
+    krea2_setup_parser(parser)
+    args = parser.parse_args([])
+    assert args.feather_attn is False
+    args = parser.parse_args(["--feather_attn"])
+    assert args.feather_attn is True
+
+
 def test_parser_has_turbo_lora_flags():
     import argparse
 

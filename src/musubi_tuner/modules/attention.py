@@ -31,6 +31,11 @@ try:
 except ImportError:
     xops = None
 
+try:
+    from feather_attn import feather_attn_func
+except ImportError:
+    feather_attn_func = None
+
 
 @dataclass
 class AttentionParams:
@@ -265,7 +270,17 @@ def attention(
             # Reshape x with shape [(bxs), a, d] to [b, s, a, d]
             x = x.view(batch_size, seqlen, x.shape[-2], x.shape[-1])  # B, L, H, D
 
-    elif attn_params.attn_mode == "flash":
+    elif attn_params.attn_mode == "feather" and not (
+        attn_params.split_attn or attn_params.cu_seqlens is not None or attn_params.attention_mask is not None
+    ):
+        if feather_attn_func is None:
+            raise ImportError("feather-attn is not available")
+        x = feather_attn_func(q, k, v, dropout_p=drop_rate)
+        q, k, v = None, None, None
+
+    elif attn_params.attn_mode in ("flash", "feather"):
+        # FeatherAttn handles dense, unmasked attention. Masked/split/varlen cases
+        # fall back to AITER's FlashAttention implementation.
         if attn_params.split_attn:
             x = []
             for i in range(len(q)):

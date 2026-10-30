@@ -279,8 +279,8 @@ def parse_args() -> argparse.Namespace:
         "--attn_mode",
         type=str,
         default="torch",
-        choices=["torch", "flash", "sageattn", "xformers"],
-        help="attention backend ('torch'=SDPA, 'flash', 'sageattn', 'xformers')",
+        choices=["torch", "flash", "feather", "sageattn", "xformers"],
+        help="attention backend ('torch'=SDPA, 'flash', 'feather', 'sageattn', 'xformers')",
     )
     parser.add_argument(
         "--split_attn",

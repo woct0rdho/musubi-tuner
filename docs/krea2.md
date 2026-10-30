@@ -243,22 +243,24 @@ loss curveはfp8/bf16基準とほぼ一致します（backward両モードとも
 
 - `--sdpa` for PyTorch's scaled dot product attention (default, no extra dependencies).
 - `--flash_attn` for FlashAttention.
+- `--feather_attn` for FeatherAttn (AITER forward, fused FeatherAttn backward. Masked/split cases fall back to FlashAttention).
 - `--sage_attn` for SageAttention.
 - `--xformers` for xformers.
 - `--split_attn` processes attention in chunks, reducing VRAM usage slightly. Recommended when using any backend other than `--sdpa`.
 
-Krea 2 uses Grouped-Query Attention (48 query heads / 12 key-value heads). SDPA, FlashAttention, and SageAttention support this natively; for xformers the key/value heads are expanded to match (numerically identical).
+Krea 2 uses Grouped-Query Attention (48 query heads / 12 key-value heads). SDPA, FlashAttention, and SageAttention support this natively. xformers and FeatherAttn expand the key/value heads for their kernels (numerically identical).
 
 <details>
 <summary>日本語</summary>
 
 - `--sdpa`でPyTorchのscaled dot product attentionを使用（デフォルト、追加の依存ライブラリ不要）。
 - `--flash_attn`でFlashAttentionを使用。
+- `--feather_attn`でFeatherAttnを使用（forwardはAITER、backwardはFeatherAttnの融合カーネル。masked/split時はFlashAttentionにフォールバック）。
 - `--sage_attn`でSageAttentionを使用。
 - `--xformers`でxformersを使用。
 - `--split_attn`を指定すると、attentionを分割して処理し、VRAM使用量をわずかに減らします。`--sdpa`以外のバックエンドを使う場合は指定を推奨します。
 
-Krea 2はGrouped-Query Attention（48 query head / 12 key-value head）を使用します。SDPA、FlashAttention、SageAttentionはこれをネイティブにサポートしており、xformersではkey/value headを拡張して一致させます（数値的に同一）。
+Krea 2はGrouped-Query Attention（48 query head / 12 key-value head）を使用します。SDPA、FlashAttention、SageAttentionはこれをネイティブにサポートしており、xformersとFeatherAttnではkey/value headを拡張して一致させます（数値的に同一）。
 
 </details>
 
